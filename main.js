@@ -17,6 +17,8 @@ let tier1list;
 let tier2list;
 let tier3list;
 
+let mode = 2
+
 function printLog(msg) {
     console.log(chalk.bold('['+chalk.blue('!')+']')+' '+msg)
 }
@@ -27,6 +29,10 @@ function printWarning(msg) {
 
 function printAlert(msg) {
     console.log(chalk.bold('['+chalk.red('!')+']')+' '+msg)
+}
+
+function printSucess(msg) {
+    console.log(chalk.bold('['+chalk.green('!')+']')+' '+msg)
 }
 
 function processList(list, tier) {
@@ -69,6 +75,23 @@ function isEulaAccepted() {
     }
 }
 
+function analyseAndCensor() {
+    try {
+        const data = fs.readFileSync('./content.txt', 'utf8')
+        if (data.includes(tier1list) && mode == 1) {
+            printWarning('content.txt contains a violation of tier 1');
+        } else if (data.includes(tier2list)&& mode == 2) {
+            printWarning('content.txt contains a violation of tier 2');
+        } else if (data.includes(tier3list)) {
+            printAlert('content.txt contains a violation of tier 3!');
+        } else {
+            printSucess('content.txt is free of bad content! :D');
+        }
+    } catch (err) {
+        printAlert(err);
+    }
+}
+
 function init() {
     console.log(chalk.bold.red('filter-ai'));
     console.log(chalk.italic('Learns to censor'));
@@ -87,7 +110,13 @@ function init() {
 
 function main() {
     printLog('Preparing to recive data...');
-    printAlert('Ready to censor.')
+    printLog('Ready to censor.');
+    if (fs.existsSync('./content.txt')) {
+        analyseAndCensor();
+    } else {
+        const createInpurFile = fs.writeFileSync('./content.txt', 'Content goes here')
+        printAlert("content.txt does not exist. I'll create it now, but you'll have to run me again with the new input.")
+    }
 }
 
 init();
