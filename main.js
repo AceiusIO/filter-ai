@@ -36,7 +36,7 @@ function printSucess(msg) {
 }
 
 function processList(list, tier) {
-    console.log(chalk.bold('['+chalk.blue('WordList')+'] ')+chalk.green(list)+' words defined as:\n');
+    console.log(chalk.bold('['+chalk.blue('WordList')+'] ')+chalk.green(list)+' (list for tier '+tier+') words defined as:\n');
     try {
         const data = fs.readFileSync(list, 'utf8')
         console.log(chalk.yellow(data));

@@ -30,11 +30,11 @@ pear
 Every word should be placed on its own line. There are no comments currently, but that may change.
 
 ### Tier #1
-Tier one words should be words that most people would not be offended by, such as stupid. Minor insults, and wanna be swear words. 
+Tier one words should be words that most people would not be offended by, such as stupid. Minor insults, and wanna be swear words. Reccomended if you want the squeaky clean shine.
 ### Tier #2
-Tier two words are words that a majority of people would find offensive, such as swear words.
+Tier two words are words that a majority of people would find offensive, such as swear words. This is the default.
 ### Tier #3
-Tier three words are words that almost all people would find offensive, such as racial slurs, NSFW language, and the likes.
+Tier three words are words that almost all people would find offensive, such as racial slurs, NSFW language, and the likes. Turning this off would basically make the bot inactive so it can't be disabled.
 
 ## ⚙️ Customize configuration
 Using filter.properties, we can set how much the bot will be active. By default the bot is on mode 2, filtering tier 2 words and above. You can change this to mode 3 (level 3 words only) or mode 1 (filter everything).
