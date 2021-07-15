@@ -6,7 +6,9 @@ const startData = `
  * Emantella - Initial Data
 `
 
+const config = require('./configparser');
 const chalk = require('chalk');
+const path = require('path');
 const fs = require('fs');
 
 const tier1 = process.argv[2]
@@ -16,8 +18,7 @@ const tier3 = process.argv[4]
 let tier1list;
 let tier2list;
 let tier3list;
-
-let mode = 2
+let mode;
 
 function printLog(msg) {
     console.log(chalk.bold('['+chalk.blue('!')+']')+' '+msg)
@@ -93,6 +94,16 @@ function analyseAndCensor() {
 }
 
 function init() {
+    if (tier1 == null) {
+        printAlert('Incorrect useage.');
+        console.log(chalk.red('node filter.js <option|tier1wordlist> <tier2wordlist> <tier3wordlist>')+'\nUse node filter.js --help or -h');
+        return;
+    } else if (tier1 == '--help' || tier1 == '-h') {
+        printLog('Docs are avalible at https://aceius.gitbook.io/wiki');
+        console.log(`Usage: node filter.js <option|tier1wordlist> <tier2wordlist> <tier3wordlist>\nExamples:\n  node filter.js --help/-h ::: Shows this menu\n  node filter.js tier1list.txt tier2list.txt tier3list.txt ::: Runs the algorithm with list inputs and scanning ./content.txt\nEdit filter.properties to change settings.`);
+        return;
+    }
+    config.load();
     console.log(chalk.bold.red('filter-ai'));
     console.log(chalk.italic('Learns to censor'));
     console.log(startData)
@@ -115,7 +126,8 @@ function main() {
         analyseAndCensor();
     } else {
         const createInpurFile = fs.writeFileSync('./content.txt', 'Content goes here')
-        printAlert("content.txt does not exist. I'll create it now, but you'll have to run me again with the new input.")
+        printAlert("content.txt does not exist. I'll create it now, but you'll have to run me again with the new input.");
+
     }
 }
 
