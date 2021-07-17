@@ -7,6 +7,7 @@ const startData = `
 `
 
 const config = require('./configparser');
+const print = require('spray-print');
 const chalk = require('chalk');
 const path = require('path');
 const fs = require('fs');
@@ -20,24 +21,8 @@ let tier2list;
 let tier3list;
 let mode;
 
-function printLog(msg) {
-    console.log(chalk.bold('['+chalk.blue('!')+']')+' '+msg)
-}
-
-function printWarning(msg) {
-    console.log(chalk.bold('['+chalk.yellow('!')+']')+' '+msg)
-}
-
-function printAlert(msg) {
-    console.log(chalk.bold('['+chalk.red('!')+']')+' '+msg)
-}
-
-function printSucess(msg) {
-    console.log(chalk.bold('['+chalk.green('!')+']')+' '+msg)
-}
-
 function processList(list, tier) {
-    console.log(chalk.bold('['+chalk.blue('WordList')+'] ')+chalk.green(list)+' (list for tier '+tier+') words defined as:\n');
+    print.println('WordList',chalk.green(list)+' (list for tier '+tier+') words defined as:\n');
     try {
         const data = fs.readFileSync(list, 'utf8')
         console.log(chalk.yellow(data));
@@ -49,7 +34,7 @@ function processList(list, tier) {
             tier3list = data
         }
     } catch (err) {
-        console.error(err);
+        print.error(err);
     }
 }
 
@@ -58,9 +43,9 @@ function createEulaFile() {
         const eula = "By accepting the eula and using the software, you aggree that you will use it only for the right reasons, and that you will respect the GNU GPL v3 when forking or otherwise remixing the software. \neula=false"
         const data = fs.writeFileSync('./eula.txt', eula)
     } catch (err) {
-        printAlert(err)
+        print.error(err)
     }
-    printWarning('You have not agreed to the eula. Please do so in eula.txt if you wish to continue');
+    print.warn('You have not agreed to the eula. Please do so in eula.txt if you wish to continue');
 }
 
 function isEulaAccepted() {
@@ -69,10 +54,10 @@ function isEulaAccepted() {
         if (data.includes('true')) {
             main();
         } else {
-            printWarning('You have not agreed to the eula. Please do so in eula.txt if you wish to continue');
+            print.warn('You have not agreed to the eula. Please do so in eula.txt if you wish to continue');
         }
     } catch (err) {
-        printAlert(err);
+        print.error(err);
     }
 }
 
@@ -80,26 +65,26 @@ function analyseAndCensor() {
     try {
         const data = fs.readFileSync('./content.txt', 'utf8')
         if (data.includes(tier1list) && mode == 1) {
-            printWarning('content.txt contains a violation of tier 1');
+            print.warn('content.txt contains a violation of tier 1');
         } else if (data.includes(tier2list)&& mode == 2) {
-            printWarning('content.txt contains a violation of tier 2');
+            print.warn('content.txt contains a violation of tier 2');
         } else if (data.includes(tier3list)) {
-            printAlert('content.txt contains a violation of tier 3!');
+            print.error('content.txt contains a violation of tier 3!');
         } else {
-            printSucess('content.txt is free of bad content! :D');
+            print.sucess('content.txt is free of bad content! :D');
         }
     } catch (err) {
-        printAlert(err);
+        print.error(err);
     }
 }
 
 function init() {
     if (tier1 == null) {
-        printAlert('Incorrect useage.');
+        print.error('Incorrect useage.');
         console.log(chalk.red('node filter.js <option|tier1wordlist> <tier2wordlist> <tier3wordlist>')+'\nUse node filter.js --help or -h');
         return;
     } else if (tier1 == '--help' || tier1 == '-h') {
-        printLog('Docs are avalible at https://aceius.gitbook.io/wiki');
+        print.println('Docs are avalible at https://aceius.gitbook.io/wiki');
         console.log(`Usage: node filter.js <option|tier1wordlist> <tier2wordlist> <tier3wordlist>\nExamples:\n  node filter.js --help/-h ::: Shows this menu\n  node filter.js tier1list.txt tier2list.txt tier3list.txt ::: Runs the algorithm with list inputs and scanning ./content.txt\nEdit filter.properties to change settings.`);
         return;
     }
@@ -120,13 +105,13 @@ function init() {
 }
 
 function main() {
-    printLog('Preparing to recive data...');
-    printLog('Ready to censor.');
+    print.println('Preparing to recive data...');
+    print.println('Ready to censor.');
     if (fs.existsSync('./content.txt')) {
         analyseAndCensor();
     } else {
         const createInpurFile = fs.writeFileSync('./content.txt', 'Content goes here')
-        printAlert("content.txt does not exist. I'll create it now, but you'll have to run me again with the new input.");
+        print.error("content.txt does not exist. I'll create it now, but you'll have to run me again with the new input.");
 
     }
 }
